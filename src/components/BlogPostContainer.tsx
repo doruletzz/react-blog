@@ -1,20 +1,32 @@
 import BlogPost from "./BlogPost";
 import { connect } from 'react-redux';
 import { find } from 'lodash';
+import { fetchPost } from '../redux/actions';
+import { useParams } from "react-router";
 
-const mapStateToProps = (state, { id, slug }) => {
-    const post = find(state.posts.items, { id });
+interface OwnProps {
+    slug: string
+}
+
+const mapStateToProps = (state , ownProps : OwnProps) => {
+    const { slug } = ownProps;
+    const post = find(state.posts.items, { slug });
+
     return {
-        id, post, slug
+        post, slug
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchPosts: () => dispatch(fetchPost(id, slug)),
+    fetchPost: (slug : string) => dispatch(fetchPost(slug)),
 });
 
 
 const wrapper = connect(mapStateToProps, mapDispatchToProps);
-const BlogPostListContainer = wrapper(BlogPost);
+const BlogPostWrapper = wrapper(BlogPost);
+const BlogPostContainer = () => {
+    const { slug } = useParams();
+    return (<BlogPostWrapper slug={slug} />);
+};
 
-export default BlogPostListContainer;
+export default BlogPostContainer;

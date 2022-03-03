@@ -1,7 +1,7 @@
 import faker from '@faker-js/faker';
 
 const {
-    date: { past, recent },
+    date: { past },
     lorem: { paragraph, paragraphs, slug, words },
     random: { uuid },
 } = faker;
@@ -13,16 +13,16 @@ export const FETCH_POSTS = "FETCH_POSTS";
 const receivePosts = (count = 1, options = {}) => {
 
     const posts = Array(count)
-        .fill()
+        .fill({})
         .map(() => {
             const summary = paragraph();
             return {
-                id: options.id || uuid().split('-')[0],
+                id:uuid().split('-')[0],
                 title: words(),
                 summary,
                 content: `${summary}\n${paragraphs()}`,
                 date: past(),
-                slug: options.slug || slug()
+                slug: slug()
             };
         });
 
@@ -30,8 +30,6 @@ const receivePosts = (count = 1, options = {}) => {
         type: RECEIVE_POSTS,
         posts
     };
-
-
 
 }
 
@@ -50,13 +48,12 @@ export const fetchPosts = () => {
 /**
  * Fetches post.
  *
- * @param {String} id
  * @param {String} slug
  */
-export const fetchPost = (id, slug) => {
+export const fetchPost = (slug : string) => {
     return dispatch => {
         // emulate api request
-        setTimeout(() => dispatch(receivePosts(1, { id, slug })), 1000);
+        setTimeout(() => dispatch(receivePosts(1, { slug })), 1000);
       };
 };
 
